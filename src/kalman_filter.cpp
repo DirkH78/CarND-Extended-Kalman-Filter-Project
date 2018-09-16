@@ -70,6 +70,15 @@ void KalmanFilter::UpdateEKF(const VectorXd &z) {
   
   //for EKF: use Hj instead of H (this is done within Fusion)
   VectorXd y = z - z_pred;
+  
+  // Normalize the angle, so that angle is between -pi and pi
+  while (y(1)>M_PI) {
+    y(1) -= 2 * M_PI;
+  }
+  while (y(1)<-M_PI) {
+    y(1) += 2 * M_PI;
+  }
+  
   MatrixXd Ht = H_.transpose();
   MatrixXd S = H_ * P_ * Ht + R_;
   MatrixXd Si = S.inverse();
